@@ -13,7 +13,7 @@ Script files are plain text files, and each line is one command. Comments are su
 The next section describes the syntax and functions of each script command. Here are some general details about script syntax:
 * Command names are case-insensitive.
 * Square brackets indicate an optional parameter.
-* `STR` represents a string which begins and ends with a `"` character. `\"` is an escaped quote and `'n` is a newline.
+* `STR` represents a string which begins and ends with a `"` character. `\"` is an escaped quote and `\n` is a newline.
 * `NUM` represents a numeric constant. Numbers are assumed to be decimal unless they are prefixed with `$` or `0x`, in which case they will be interpreted as hexadecimal. Negative numbers and fractional numbers are not allowed.
 
 ## Script command reference
@@ -76,6 +76,7 @@ Defines a custom tag. The arguments are the tag name and value respectively. Tag
 ### SetSongNumber
 
 `SetSongNumber NUM`
+
 Changes the current song number used by the `%n` filename conversion specifier.
 
 ### MakeMiniGSF

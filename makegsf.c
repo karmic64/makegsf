@@ -728,7 +728,7 @@ int gsf_tag_name_ok(wchar_t * name)
 		error++;
 	}
 	int bad_tag_name = 0;
-	if (name[0] == L'_')
+	if (name[0] == L'_' || !wcscmp(name,L"filedir") || !wcscmp(name,L"filename") || !wcscmp(name,L"fileext"))
 	{
 		werr(L"GSF tag name %ls is reserved", name);
 		error++;

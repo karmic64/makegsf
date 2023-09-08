@@ -11,6 +11,11 @@
 #include <unistd.h>
 #include <sys/stat.h>
 
+#ifdef _WIN32
+/* for GetACP() */
+#include <winnls.h>
+#endif
+
 #include <iconv.h>
 #include <zlib.h>
 
@@ -150,6 +155,12 @@ unsigned song_number = 1;
 unsigned song_id;
 buffer_t gsf_tag_buf = DEFAULT_BUFFER_T;
 
+#ifdef _WIN32
+char os_character_encoding[16];
+#else
+#define os_character_encoding ""
+#endif
+
 
 
 
@@ -272,7 +283,7 @@ size_t iconv_2(const char * to, const char * from, buffer_t * dest_buf, void * s
 	iconv_t ic = iconv_open(to,from);
 	if (ic == (iconv_t)-1)
 	{
-		err("Unsupported conversion");
+		err("Unsupported conversion from \"%s\" to \"%s\"",from,to);
 		return 0;
 	}
 	
@@ -363,7 +374,7 @@ FILE * open_script(char * src_filename)
 	/* convert base filename to wchars for future printing */
 	static buffer_t filename_buf = DEFAULT_BUFFER_T;
 	filename_buf.size = 0;
-	if (iconv_2("wchar_t","", &filename_buf, src_filename+base_name_index,src_filename_size-base_name_index+1))
+	if (iconv_2("wchar_t",os_character_encoding, &filename_buf, src_filename+base_name_index,src_filename_size-base_name_index+1))
 		script_name = filename_buf.data;
 	
 	/* if needed, chdir to location of script file */
@@ -807,7 +818,7 @@ char * get_os_filename(wchar_t * filename)
 	/** convert to os-preferred format **/
 	static buffer_t os_filename_buf = DEFAULT_BUFFER_T;
 	os_filename_buf.size = 0;
-	iconv_2("","wchar_t", &os_filename_buf, filename, (filename_len+1)*sizeof(wchar_t));
+	iconv_2(os_character_encoding,"wchar_t", &os_filename_buf, filename, (filename_len+1)*sizeof(wchar_t));
 	return os_filename_buf.data;
 }
 
@@ -1109,7 +1120,9 @@ int main(int argc, char *argv[])
 		puts("usage: makegsf scriptfile");
 		return EXIT_FAILURE;
 	}
-	
+#ifdef _WIN32
+	sprintf(os_character_encoding, "CP%u", GetACP());
+#endif
 	
 	
 	open_script(argv[1]);

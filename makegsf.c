@@ -312,10 +312,10 @@ size_t iconv_2(const char * to, const char * from, buffer_t * dest_buf, void * s
 				switch (en)
 				{
 					case EILSEQ:
-						err("Invalid character at index %llu",src_ptr-src);
+						err("Invalid character at index %tu",src_ptr-src);
 						break;
 					case EINVAL:
-						err("Incomplete character at index %llu",src_ptr-src);
+						err("Incomplete character at index %tu",src_ptr-src);
 						break;
 					default:
 						err("Conversion failure (%d)",errno);
